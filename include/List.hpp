@@ -42,34 +42,33 @@ class List {
         bool empty() const;
         size_t size() const;
         size_t max_size() const ;
-        void push_back( const T& value);
-        void push_back( T && value);
+        void push_back( const T& value );
+        void push_back( T&& value );
         void push_back();
         void push_front( const T& value );
         void push_front( T&& value );
         void pop_back();
         void pop_front();
-        void insert( size_t position, const T& value);
+        void insert( size_t position, const T& value );
         void insert( size_t position, T&& value );
         void insert( size_t position, size_t count, const T& value );
-        void insert( size_t position, std::initializer_list<T> ilist);
+        void insert( size_t position, std::initializer_list<T> ilist );
         void erase( size_t pos );
-        void resize(size_t count);
-        void resize(size_t count,const T& value);
-        void swap(List& other);
+        void resize( size_t count );
+        void resize( size_t count,const T& value);
+        void swap( List& other );
         void unique();
-        void merge(List& other); 
-
+        void merge( List& other ); 
         void clear();
            
 };
 
 template<typename T>
-List<T>::List(size_t size, const T& value ):  head(new Node(value)), Size{size} {
+List<T>::List( size_t size, const T& value ): head(new Node(value)), Size{size} {
 
     --size;
     Node* tmp = head;
-    for(size_t i{}; i < size; ++i){
+    for(size_t i{}; i < size; ++i) {
         tmp->next = new Node(value);
         tmp->next->prev = tmp;
         tmp = tmp->next;
@@ -96,7 +95,6 @@ List<T>::List( List&& other ): head(other.head), tail(other.tail), Size(other.Si
 
 template<typename T>
 List<T>::List(std::initializer_list<T> list): head{nullptr}, tail(nullptr), Size{0} {
-
 	for( T val : list) {
 		push_back(val);
 	}
@@ -112,20 +110,17 @@ List<T>& List<T>::operator=(const List<T>& other) {
         push_back(tmp->data);
         tmp = tmp->next;
     }
-
 	return *this;	
-
 }
 
 template<typename T>
 List<T>& List<T>::operator=(List<T>&& other) {
 	if(this == &other) return *this;
-    
     clear();
 	head = other.head;
     tail = other.tail;
     Size = other.Size;
-	
+
     other.head = nullptr;
     other.tail = nullptr;
     other.Size= 0;
@@ -133,12 +128,12 @@ List<T>& List<T>::operator=(List<T>&& other) {
     return *this;
 }
 
-
 template<typename T>
 List<T>& List<T>::operator=( std::initializer_list<T> ilist ){
     assign(ilist);
     return *this;
 }
+
 template<typename T>
 List<T>::~List() { clear(); }
 
@@ -239,14 +234,13 @@ void List<T>::push_back( T&& value ) {
     }
     ++Size;
 }
+
 template<typename T>
 void List<T>::insert(size_t position, const T& value) {
     if (position < 0 || position > Size) {
         throw std::out_of_range("Position out of range");
     }
-
     Node* node = new Node(value);
-
     if (position == 0) {
         node->next = head;
         if (head) {
@@ -317,11 +311,10 @@ void List<T>::erase( size_t position ){
     current->prev->next = current->next;
     current =nullptr;
     }   
-
 }
 
 template<typename T>
-void List<T>::push_front( const T& value ){
+void List<T>::push_front( const T& value ) {
     Node* node = new Node(value);
     node->next = head;
     head = node;
@@ -413,6 +406,7 @@ void List<T>::unique() {
         if (current->data == current->next->data) {
             Node* duplicate = current->next;
             current->next = duplicate->next;
+
             if (duplicate->next)
                 duplicate->next->prev = current;
             else
@@ -460,6 +454,7 @@ void List<T>::merge(List& other) {
     other.clear();
     *this = std::move(result);
     }
+    
 }
 template<typename T>
 void  List<T>::insert( size_t  position, T&& value ) {
