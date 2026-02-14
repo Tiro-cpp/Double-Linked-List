@@ -1,5 +1,12 @@
 #include <iostream>
 #include "List.hpp"
+struct Animal {
+    std::string name;
+    int age;
+
+    Animal(std::string n, int a)
+        : name(n), age(a) {}
+};
 
 void print(const List<int>& l, const std::string& name) {
     std::cout << name << " (size = " << l.size() << "): ";
@@ -97,6 +104,19 @@ int main() {
 
     z.assign({1,2,3});
     print(z, "z after assign({1,2,3})");
+   
+    List<Animal> animals;
+   
+    animals.emplace_back("Dog", 3);
+    animals.emplace_back("Cat", 2);
+    animals.emplace_front("Horse", 5);
+    animals.emplace(3,"fish",3);
+    while (!animals.empty()) {
+        std::cout << animals.front().name << " "
+                  << animals.front().age << "\n";
+        animals.pop_front();
+    }
+
 
     std::cout << "\n===== ALL TESTS DONE =====\n";
 }

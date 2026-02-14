@@ -1,9 +1,9 @@
 #pragma once
 #include <cstddef>
 #include <utility>
+#include "Forward.hpp"
 
 template <typename T>
-
 class List {
     private:
         struct Node {
@@ -11,6 +11,11 @@ class List {
             Node* next = nullptr;
             Node* prev = nullptr;
             Node() = default;
+
+            template<typename ...Args>
+            Node(Args&&... values)
+            : data(forward<Args>(values)...), next{nullptr}, prev{nullptr} {}
+
             Node(const T& value)
             : data(value), next(nullptr), prev(nullptr) {}
             Node(T&& value)
@@ -53,6 +58,12 @@ class List {
         void insert( size_t position, T&& value );
         void insert( size_t position, size_t count, const T& value );
         void insert( size_t position, std::initializer_list<T> ilist );
+        template<typename... Args>
+        void emplace(const size_t position, Args&&... values);   
+        template<typename... Args>
+        void emplace_back(Args&&... values);
+        template<typename... Args>
+        void emplace_front(Args&&... values);
         void erase( size_t pos );
         void resize( size_t count );
         void resize( size_t count,const T& value);
@@ -60,6 +71,7 @@ class List {
         void unique();
         void merge( List& other ); 
         void clear();
+        
            
 };
 
@@ -456,6 +468,60 @@ void List<T>::merge(List& other) {
     }
     
 }
+template<typename T>
+template<typename... Args>  
+void List<T>::emplace(const size_t position, Args&&... values){
+    if (position > Size) {
+        throw std::out_of_range("Position out of range");
+    }
+    
+    Node* node = new Node(forward<Args>(values)...);
+
+    if (position == 0) {
+        emplace_front(forward<Args>(values)...);
+    } else if (position == Size) {
+        emplace_back(forward<Args>(values)...);
+    } else {
+        Node* current = head;
+        for (size_t i = 0; i < position; ++i) {
+            current = current->next;
+        }
+        node->next = current;
+        node->prev = current->prev;
+        current->prev->next = node;
+        current->prev = node;
+    }
+    ++Size;
+}
+
+
+template<typename T>
+template<typename... Args>
+void List<T>::emplace_back(Args&&... values){
+    Node* node = new Node(forward<Args>(values)...);
+
+    if (!tail) {
+        head = tail = node;
+    } else {
+        tail->next = node;
+        node->prev = tail;
+        tail = node;
+    }
+    ++Size;
+}
+
+
+template<typename T>
+template<typename... Args>
+void List<T>::emplace_front(Args&&... values){
+    Node* node = new Node(forward<Args>(values)...);
+    node->next = head;
+    head = node;
+    ++Size;
+}
+
+
+
 template<typename T>
 void  List<T>::insert( size_t  position, T&& value ) {
     if ( position > Size) {

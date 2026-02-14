@@ -1,5 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
+CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude -I../FORWARD
 
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
@@ -15,3 +16,4 @@ $(TARGET): $(OBJ)
 
 clean:
 	rm -f $(OBJ) $(TARGET)
+	
